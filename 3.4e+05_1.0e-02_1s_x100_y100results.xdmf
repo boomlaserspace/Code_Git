@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="3.0" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <Domain>
+    <Grid Name="TimeSeries" GridType="Collection" CollectionType="Temporal">
+      <Grid Name="mesh" GridType="Uniform">
+        <Topology NumberOfElements="3598" TopologyType="Triangle" NodesPerElement="3">
+          <DataItem Dimensions="3598 3" NumberType="UInt" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/Mesh/0/mesh/topology</DataItem>
+        </Topology>
+        <Geometry GeometryType="XY">
+          <DataItem Dimensions="1883 2" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/Mesh/0/mesh/geometry</DataItem>
+        </Geometry>
+        <Time Value="0.050000000000000003" />
+        <Attribute Name="v" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="1883 3" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/0</DataItem>
+        </Attribute>
+        <Attribute Name="p" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/1</DataItem>
+        </Attribute>
+        <Attribute Name="T" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/2</DataItem>
+        </Attribute>
+      </Grid>
+      <Grid>
+        <xi:include xpointer="xpointer(//Grid[@Name=&quot;TimeSeries&quot;]/Grid[1]/*[self::Topology or self::Geometry])" />
+        <Time Value="0.099999999999999992" />
+        <Attribute Name="v" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="1883 3" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/3</DataItem>
+        </Attribute>
+        <Attribute Name="p" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/4</DataItem>
+        </Attribute>
+        <Attribute Name="T" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/5</DataItem>
+        </Attribute>
+      </Grid>
+      <Grid>
+        <xi:include xpointer="xpointer(//Grid[@Name=&quot;TimeSeries&quot;]/Grid[1]/*[self::Topology or self::Geometry])" />
+        <Time Value="0.14999999999999999" />
+        <Attribute Name="v" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="1883 3" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/6</DataItem>
+        </Attribute>
+        <Attribute Name="p" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/7</DataItem>
+        </Attribute>
+        <Attribute Name="T" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/8</DataItem>
+        </Attribute>
+      </Grid>
+      <Grid>
+        <xi:include xpointer="xpointer(//Grid[@Name=&quot;TimeSeries&quot;]/Grid[1]/*[self::Topology or self::Geometry])" />
+        <Time Value="0.20000000000000004" />
+        <Attribute Name="v" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="1883 3" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/9</DataItem>
+        </Attribute>
+        <Attribute Name="p" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/10</DataItem>
+        </Attribute>
+        <Attribute Name="T" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/11</DataItem>
+        </Attribute>
+      </Grid>
+      <Grid>
+        <xi:include xpointer="xpointer(//Grid[@Name=&quot;TimeSeries&quot;]/Grid[1]/*[self::Topology or self::Geometry])" />
+        <Time Value="0.25000000000000006" />
+        <Attribute Name="v" AttributeType="Vector" Center="Node">
+          <DataItem Dimensions="1883 3" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/12</DataItem>
+        </Attribute>
+        <Attribute Name="p" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/13</DataItem>
+        </Attribute>
+        <Attribute Name="T" AttributeType="Scalar" Center="Node">
+          <DataItem Dimensions="1883 1" Format="HDF">3.4e+05_1.0e-02_1s_x100_y100results.h5:/VisualisationVector/14</DataItem>
+        </Attribute>
+      </Grid>
+    </Grid>
+  </Domain>
+</Xdmf>
