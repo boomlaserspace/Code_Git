@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from cylindrical_coordinates_v2 import* 
 
 
-xdmf_file, xdmf_facet_marker_file = generate_xdmf_mesh("/home/david/Documents/SoSe22/KontiSim/Code/Grid_Operations/Dose_steht.geo")
+xdmf_file, xdmf_facet_marker_file = generate_xdmf_mesh("/home/david/Documents/SoSe22/KontiSim/Code_Git/Grid_Operations/Dose_steht.geo")
 
 mesh = Mesh()
 with XDMFFile(xdmf_file) as infile:
