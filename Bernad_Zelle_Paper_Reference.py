@@ -113,7 +113,6 @@ F_Temp =(
             ((threehalf*Temp - two*Temp0 + half*Temp00) * test_T) * dV  #partial derivative dT/dt        LHS 
             + delta_t *two*dot(grad(Temp0), vel0) * test_T  * dV #convective part 2 v ∇ T         LHS 
             - delta_t *  dot(grad(Temp00), vel00) * test_T  * dV #convective part - v ∇ T       LHS
-
             + delta_t * 1./sqrt(Ra*Pr) * inner(grad(Temp), grad(test_T)) * dV  # Thermal diffusion (∇ T) * (∇ delT)  RHS
     )
 
