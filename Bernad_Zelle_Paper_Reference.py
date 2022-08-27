@@ -1,3 +1,4 @@
+from sympy import degree
 from generate_xdmf_mesh import *
 from os import path
 from dolfin import*
@@ -5,7 +6,8 @@ from matplotlib import pyplot as plt
 from cylindrical_coordinates_v2 import* 
 
 
-xdmf_file, xdmf_facet_marker_file = generate_xdmf_mesh("/home/david/Documents/SoSe22/KontiSim/Code_Git/Grid_Operations/Dose_steht.geo")
+
+xdmf_file, xdmf_facet_marker_file = generate_xdmf_mesh("/Users/davidoexle/Documents/Uni/SoSe22/KontiSim/Code_Git/Grid_Operations/Dose_steht.geo")
 
 mesh = Mesh()
 with XDMFFile(xdmf_file) as infile:
@@ -76,10 +78,10 @@ wall_101 = DirichletBC(Vh, v_zero, facet_markers, 101)
 T_high_left = Constant(0.5)
 T_low_right = Constant(-0.5)
 
-low_temperature_bc = DirichletBC(Th, T_low_right, facet_markers, 101)
-high_temperature_bc = DirichletBC(Th, T_high_left,facet_markers, 100)
+#low_temperature_bc = DirichletBC(Th, T_low_right, facet_markers, 101)
+#high_temperature_bc = DirichletBC(Th, T_high_left,facet_markers, 100)
 
-bc = [wall_100, wall_101, low_temperature_bc, high_temperature_bc]
+bc = [wall_100, wall_101]
 
 ################### define Functions ########################
 sol = Function(Wh)
@@ -100,20 +102,31 @@ threehalf = Constant(1.5)
 ################# Weak Form ############################
 F_p = -(div(vel) * test_p * dV)
 
+q = Expression("10*x[1]", degree = 2)
+
+S = FunctionSpace(mesh, degree = 2)
+project(q*dA,S)
+
+#File("Oberflächenintegral.pvd")<<q*dA(101)
+
 F_v = (
         inner(threehalf*vel-two*vel0 + half*vel00,test_v) * dV  # partial time  3*v_n+1 - 4*v_n + 1*v_n-1             LHS
         + delta_t *two*(inner(outer_expend(vel0,test_v), grad_cylindircal_vector(vel0))) * dV # first convective term for velocity      LHS
         - delta_t * (inner(outer_expend(vel00,test_v), grad_cylindircal_vector(vel00))) * dV # second convective term for velocity     LHS 
         + delta_t * (inner(grad(press),test_v)) * dV  #Pressure gradient (i) part of sigma                          RHS
         + delta_t * sqrt(Pr/Ra) * (inner(grad(test_v), grad(vel))) * dV #(∇ v) * (∇ delv) #impulse diffusity  (ii) part of sigma   RHS
-        + delta_t * (Temp) * inner(grav, test_v) * dV  #Gravityforce                                                RHS
+
+        + delta_t * (Temp) * inner(grav, test_v) * dV  #Gravityforce   RHS   
+                       
     )
+
+
 
 F_Temp =( 
             ((threehalf*Temp - two*Temp0 + half*Temp00) * test_T) * dV  #partial derivative dT/dt        LHS 
             + delta_t *two*dot(grad(Temp0), vel0) * test_T  * dV #convective part 2 v ∇ T         LHS 
             - delta_t *  dot(grad(Temp00), vel00) * test_T  * dV #convective part - v ∇ T       LHS
-            + delta_t * 1./sqrt(Ra*Pr) * inner(grad(Temp), grad(test_T)) * dV  # Thermal diffusion (∇ T) * (∇ delT)  RHS
+            + delta_t * 1./sqrt(Ra*Pr) * inner(grad(Temp), grad(test_T)) * dV  # Thermal diffusion (∇ T) * (∇ delT)  RHS     
     )
 
 
@@ -142,7 +155,7 @@ vtkfile_temperature =   File('temperature.pvd')
 step_counter = 0
 vmax_array = []
 step_array = []
-t = 0
+t = 1
 
 while t < t_end:
     step_counter += 1
