@@ -36,6 +36,10 @@ dA = Measure("ds", domain=mesh, subdomain_data=facet_markers)
 dV = Measure("dx", domain=mesh)
 n = FacetNormal(mesh)
 
+
+
+
+
 ##### define constants #######
 
 
@@ -48,8 +52,6 @@ Nu = Constant(nusselt)
 
 cfl = 0.1
 
-r_coord_inv = Expression("1.0/(x[0]+ tol)", degree=2,tol = 1e-2)
-r_coord = Expression("x[0]+tol", degree=2,tol=1e-2)
 
 
 del_t = 1e-2
@@ -77,22 +79,13 @@ Vh, Ph, Th = Wh.split()
 
 ################### BC ############################
 v_zero =  Constant((0.0,0.0))
-v_lid = Constant((1.0,0.0))
+
 
 wall_100 = DirichletBC(Vh, v_zero, facet_markers, 100)
 wall_101 = DirichletBC(Vh, v_zero, facet_markers, 101)
 
 
-bc = [wall_100, wall_101]
-
-dic_facet = _extract_facet_markers("/Users/davidoexle/Documents/Uni/SoSe22/KontiSim/Code_Git/Grid_Operations/Dose_steht.geo",space_dim)
-if len(dic_facet) == 0: print('This dictionary is empty! ')
-for keys,values in dic_facet.items():
-    
-    print(keys)
-    print(values)
-
-print("done")
+bc = [wall_100, wall_101] ###### Wall with no slip conditions
 
 ################### define Functions ########################
 sol = Function(Wh)
@@ -109,38 +102,38 @@ half = Constant(0.5)
 two = Constant(2.0)
 threehalf = Constant(1.5)
 
+######## Test for the cylindircal Coordinates ######## 
+r_coord_inv = Expression("1.0/(x[0]+ tol)", degree=2,tol = 1e-2)
+r_coord = Expression("x[0]+tol", degree=2,tol=1e-2)
 
-#r_coord= project(r_coord,Th.collapse())
 r_coord_inv = project(r_coord_inv*r_coord,Th.collapse())
-
-#File("Koordinate_Radius.pvd")<<r_coord
 File("Koordinate_Radius_Inverse.pvd")<<r_coord_inv
 
+r_coord= project(r_coord,Th.collapse())
+File("Koordinate_Radius.pvd")<<r_coord
+
+
 ################# Weak Form ############################
-F_p = -(div(vel)*test_p *dV)
-
-
-
-
+F_p = -(div_cylindrical_vector(vel*r_coord**2)*test_p *dV)
 
 F_v = (
-        inner(threehalf*vel-two*vel0 + half*vel00,test_v) *dV  # partial time  3*v_n+1 - 4*v_n + 1*v_n-1             LHS
-        + delta_t *two*(inner(outer_expend(vel0,test_v), grad_cylindircal_vector(vel0))) * dV # first convective term for velocity      LHS
-        - delta_t * (inner(outer_expend(vel00,test_v), grad_cylindircal_vector(vel00))) * dV # second convective term for velocity     LHS 
-        + delta_t * (inner(grad(press),test_v)) * dV  #Pressure gradient (i) part of sigma                          RHS
-        + delta_t * sqrt(Pr/Ra) * (inner(grad(test_v), grad(vel))) * dV #(∇ v) * (∇ delv) #impulse diffusity  (ii) part of sigma   RHS
-        + delta_t * (Temp) * inner(grav, test_v) * dV  #Gravityforce   RHS                
+        inner(threehalf*vel-two*vel0 + half*vel00,test_v)*r_coord**2 *dV  # partial time  3*v_n+1 - 4*v_n + 1*v_n-1             LHS
+        + delta_t *two*(inner(outer_expend(vel0,test_v), grad_cylindircal_vector(vel0))) *r_coord**2 * dV # first convective term for velocity      LHS
+        - delta_t * (inner(outer_expend(vel00,test_v), grad_cylindircal_vector(vel00)))*r_coord**2 * dV # second convective term for velocity     LHS 
+        + delta_t * (inner(grad(press),test_v))*r_coord**2 * dV  #Pressure gradient (i) part of sigma                          RHS
+        + delta_t * sqrt(Pr/Ra) * (inner(grad(test_v), grad(vel))) *r_coord**2 * dV #(∇ v) * (∇ delv) #impulse diffusity  (ii) part of sigma   RHS
+        + delta_t * (Temp) * inner(grav*r_coord**2, test_v) * dV  #Gravityforce   RHS                
     )
 
 F_Temp =( 
-            ((threehalf*Temp - two*Temp0 + half*Temp00) * test_T) * dV  #partial derivative dT/dt        LHS 
-            + delta_t *two*dot(grad(Temp0), vel0) * test_T  * dV #convective part 2 v ∇ T         LHS 
-            - delta_t *  dot(grad(Temp00), vel00) * test_T  * dV #convective part - v ∇ T       LHS
-            + delta_t * 1./sqrt(Ra*Pr) * inner(grad(Temp), grad(test_T)) * dV  # Thermal diffusion (∇ T) * (∇ delT)  RHS  
-            - delta_t * Nu/sqrt(Ra*Pr) *(3-Temp)*test_T * dA(100)         
+            ((threehalf*Temp - two*Temp0 + half*Temp00) * test_T) *r_coord* dV  #partial derivative dT/dt        LHS 
+            + delta_t *two*dot(grad(Temp0), vel0) * test_T  *r_coord* dV #convective part 2 v ∇ T         LHS 
+            - delta_t *  dot(grad(Temp00), vel00) * test_T *r_coord * dV #convective part - v ∇ T       LHS
+            + delta_t * 1./sqrt(Ra*Pr) * inner(grad(Temp), grad(test_T)) *r_coord* dV  # Thermal diffusion (∇ T) * (∇ delT)  RHS  
+            - delta_t * Nu/sqrt(Ra*Pr) *(3-Temp)*test_T *r_coord* dA(100)         
     )
 
-F_weak = (F_p + F_v + F_Temp)
+F_weak = 2*pi*(F_p + F_v + F_Temp)
 
 J_newton = derivative(F_weak, sol) 
 problem = NonlinearVariationalProblem(F_weak, sol, bcs=bc, J=J_newton)
@@ -148,7 +141,6 @@ nonlinear_solver = NonlinearVariationalSolver(problem)
 
 ################### output folder ###############
 output_file = XDMFFile("{0:1.1e}__{1:1.1e}__{2}__{3}results.xdmf".format(int(rayleigh), float(del_t), int(t_end),int(nusselt)))
-#output_file = XDMFFile("Results_Bernad_Zelle_"+str(Ra)+"/"+str(t_end)+"/"+str(delta_t)+"_"+".xdmf")
 output_file.parameters["flush_output"] = True
 output_file.parameters["functions_share_mesh"] = True
 output_file.parameters["rewrite_function_mesh"] = False

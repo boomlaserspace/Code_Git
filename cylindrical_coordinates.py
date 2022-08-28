@@ -28,11 +28,11 @@ def div_cylindrical_vector(vec):  ##### hier wird ein skalar zurückgegeben
 
 
 def grad_cylindircal_vector(vec): ##### hier wird ein Tensor zurückgegeben 
-    r_inv = Expression("1.0/x[0]", degree=2)
+    r_coord_inv = Expression("1.0/(x[0]+ tol)", degree=2,tol = 1e-2)
 
     tensor_clyindrical_grad = as_tensor( 
         [[ vec[0].dx(0), 0, vec[0].dx(1)], 
-         [0,r_inv * vec[1] ,0],
+         [0,r_coord_inv * vec[1] ,0],
          [ vec[1].dx(0), 0, vec[1].dx(1)]] 
         )
     return tensor_clyindrical_grad
