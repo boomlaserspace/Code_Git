@@ -43,7 +43,7 @@ n = FacetNormal(mesh)
 ##### define constants #######
 
 
-rayleigh =  5056750 #400e5
+rayleigh =  10e7 #5056750 #400e5
 prandtl = 8.42
 nusselt = 124.211
 Ra = Constant(rayleigh)
@@ -54,9 +54,9 @@ cfl = 0.1
 
 
 
-del_t = 1e-2
+del_t = 1e-3
 delta_t = Expression("dt",degree=2,dt = del_t)
-t_end = 1000*del_t
+t_end = 10
 grav = Constant((0.0,-1.0))
 step_t = 0
 ############### mesh decleration ###################
@@ -160,7 +160,7 @@ while t < t_end:
     t += delta_t.dt 
     nonlinear_solver.solve()
 
-    if step_counter % 2 == 0:
+    if step_counter % 10 == 0:
         output_file.write(v_sol, t)
         output_file.write(p_sol, t)
         output_file.write(T_sol, t)

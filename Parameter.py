@@ -78,6 +78,7 @@ while Tc < 12.5:
 
 
 plt.figure(0)
+
 plt.xlabel(r'$T_{ref}=T_H - T_C$')
 plt.grid()
 plt.plot(Tref_list, Gr_list, label =r'$2 \sqrt{\dfrac{1}{\mathrm{Gr}}}$')
