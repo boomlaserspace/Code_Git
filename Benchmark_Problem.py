@@ -15,7 +15,7 @@ cfl = 0.1
 
 ##### define constants #######
 delta_t = Expression("dt",degree=2,dt = 1e-2)
-t_end = 0.1
+t_end = 20
 grav = Constant((0.0,-1.0))
 nx = 32
 ny = 140
@@ -206,31 +206,26 @@ while t < t_end:
    
 
 
-print("Schiefsymmetrie",skewness[-1])
-print("Temperatur Punkt1:",T_p1_mean[-1])
-print("v_x1 Punkt1:",vx_p1_mean[-1]) 
+#print("Schiefsymmetrie",skewness[-1])
+#print("Temperatur Punkt1:",T_p1_mean[-1])
+#print("v_x1 Punkt1:",vx_p1_mean[-1]) 
 
-print("pressure difference 14:",p_diff_14_mean[-1])
-print("pressure difference 35:",p_diff_35_mean[-1])
-print("pressure difference 51:",p_diff_51_mean[-1])
+#print("pressure difference 14:",p_diff_14_mean[-1])
+#print("pressure difference 35:",p_diff_35_mean[-1])
+#print("pressure difference 51:",p_diff_51_mean[-1])
 
-plt.xlabel(r'$dt$')
-#plt.plot(step_array,skewness ,label =r'$ \epsilon_{12} = T_1 + T_2 $')
-plt.plot(step_array,T_p1_mean,label =r'$ T_{avg.} $')
-plt.plot(step_array,vx_p1_mean,label =r'$ v_{avg.} $')
-plt.plot(step_array,p_diff_14,label =r'$ \Delta p_{14}$')
-plt.legend()
+
 
 
 dict = { "skewness" : skewness,
-          "average_Temo": T_p1_mean
+          "average_Temperature_p1": T_p1_mean,
+          "average_velocity_p1": vx_p1_mean,
+          "average_pressure_diff_14": p_diff_14_mean,
+          "average_pressure_diff_35": p_diff_35_mean,
+          "average_pressure_diff_51": p_diff_51_mean,
+          "time_steps": step_array,
 }
 
 with open("Auswertung", "w") as fp:   #Pickling
    json.dump(dict, fp) 
 
-with open("Auswertung", "r") as fp:   # Unpickling
-   test = (json.load(fp))
-
-
-print(test)

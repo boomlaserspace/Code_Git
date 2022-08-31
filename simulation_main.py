@@ -6,10 +6,11 @@ from dolfin import*
 from matplotlib import pyplot as plt
 from cylindrical_coordinates import * 
 from grid_generator_mesh import *
-from grid_generator_mesh import _extract_facet_markers
+
 
 ########### INPUT OF CUSTOM MESH #################
-xdmf_file, xdmf_facet_marker_file = generate_xdmf_mesh("/Users/davidoexle/Documents/Uni/SoSe22/KontiSim/Code_Git/Grid_Operations/Dose_steht.geo")
+xdmf_file, xdmf_facet_marker_file = generate_xdmf_mesh("/home/david/Documents/SoSe22/KontiSim/Code_Git/Mesh_2/Dose_steht.geo")
+#xdmf_file, xdmf_facet_marker_file = generate_xdmf_mesh("/Users/davidoexle/Documents/Uni/SoSe22/KontiSim/Code_Git/Grid_Operations/Dose_steht.geo")
 
 mesh = Mesh()
 with XDMFFile(xdmf_file) as infile:
@@ -38,8 +39,6 @@ n = FacetNormal(mesh)
 
 
 
-
-
 ##### define constants #######
 
 
@@ -51,7 +50,6 @@ Pr = Constant(prandtl)
 Nu = Constant(nusselt)
 
 cfl = 0.1
-
 
 
 del_t = 1e-3
@@ -75,6 +73,14 @@ T_elem = FiniteElement("CG", c , p_deg)
 mixed_elem = MixedElement([v_elem, p_elem, T_elem])
 Wh = FunctionSpace(mesh, mixed_elem)
 Vh, Ph, Th = Wh.split()
+
+
+ndofs = Wh.dim()
+ndofs_velocity = Wh.sub(0).dim()
+ndofs_pressure = Wh.sub(1).dim()
+ndofs_temperature = Wh.sub(2).dim()
+print ("cell Number:", n_cells, "DOFs velocity : ", ndofs_velocity, "DOFs pressure : ", ndofs_pressure, \
+      "DOFs temperature : ", ndofs_temperature)
 
 
 ################### BC ############################
@@ -194,3 +200,6 @@ while t < t_end:
 
 plt.plot(step_array,vmax_array)
 plt.show()
+
+
+
